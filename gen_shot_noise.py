@@ -57,7 +57,7 @@ def gen_shot_noise(g=1.0, l=0.5, N=10000, dt = 1e-2):
     t_burst = np.random.uniform(size = N) * t_end
     # Sort burst arrival times
     t_burst = np.sort(t_burst)
-    t_burst_idx = np.floor( t_burst / dt )
+    t_burst_idx = np.floor(t_burst / dt)
     #print 'Burst arrival times:', t_burst
     #print 'Burst arrival indices:', t_burst_idx
     # Compute the waiting times
@@ -91,7 +91,7 @@ def gen_shot_noise(g=1.0, l=0.5, N=10000, dt = 1e-2):
 print 'Hello, world'
 print 'Testing synthetic shotnoise'
 
-gen_shot_noise(g=1.0, l=0.1, N=10000)
+gen_shot_noise(g=1.0, l=0.1, N=1000)
 
 
 print 'done'
