@@ -124,3 +124,10 @@ void generate_ts_cuda(int* burst_tidx, double* burst_amplitude, int K,
 
 }
 
+
+void generate_ts_cuda_v2(vector<pulse>& pulses, double dt, double* signal)
+{
+
+
+}
+// End of file gen_signal_cuda.cu
