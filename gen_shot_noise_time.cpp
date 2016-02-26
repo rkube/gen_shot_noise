@@ -21,12 +21,7 @@ using namespace std;
 /// Constructor creates the output file
 /// write_output_xi writes the output for a given xi
 //
-//class output_t{
-//
-//
-//}
-//
-//
+
 //output_t :: output_t(string filename_, 
 //                     unsigned int K_, 
 //                     double T_end_, 
@@ -35,19 +30,18 @@ using namespace std;
 //                     double_C_s,
 //                     double L_sol) : K(K_), T_end(T_end_), dt(dt_), L_par(L_par_), C_s(C_s_)
 //{
-//    
-//
+//    H5::F5File file(filename.str(), H5F_ACC_TRUNC);
 //
 //}
 
 int main(int argc, char* argv[])
 {
     // Number of bursts
-    constexpr unsigned int K{1000};
+    constexpr unsigned int K{100000};
     // Time step
     constexpr double dt{0.01};
     // Length of time series
-    constexpr double T_end{5e3};
+    constexpr double T_end{1e5};
     // Paralll connecion length
     constexpr double L_par{1e4};
     // Ion acoustic velocity
@@ -83,20 +77,10 @@ int main(int argc, char* argv[])
         pulses_xi0.push_back(pulse(A_k0(rd), l_k(rd), v_k0(rd), t_k0(rd), tau_par));
         gamma += pulses_xi0[k].get_tau_d();
     }
-    // Sort the bursts by arrival time
-    /// See: http://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes
-    sort(pulses_xi0.begin(), pulses_xi0.end(), 
-            [](const pulse p1, const pulse p2) -> bool { 
-                // Compare double
-                return((p1.get_t() - p2.get_t()) < 1e-8);}
-        );
-    for(auto it: pulses_xi0)
-        cout << it << endl;
 
     gamma = gamma / double(K);
-
     double xi{0.0}; // Radial position at which we compute the signal
-    vector<pulse> pulse_xi; // Vector of pulses propagated to position xi
+    vector<pulse> pulses_xi; // Vector of pulses propagated to position xi
     double t_k{0.0}; // Arrival time of a pulse at xi, intermediate variable
     double A_k{0.0}; // Amplitude of a pulse at xi, intermediate variable
     //for(size_t xi_idx = 0; xi_idx < num_xi; xi_idx++)
@@ -104,7 +88,7 @@ int main(int argc, char* argv[])
     {
         xi = xi_range[xi_idx];
         // Create vector of pulses, propagated to xi.
-        pulse_xi.clear();
+        pulses_xi.clear();
         for(auto it : pulses_xi0)
         {
             t_k = xi / it.get_v() + it.get_t();
@@ -112,12 +96,18 @@ int main(int argc, char* argv[])
             if(t_k < T_end)
             {
                 A_k = it.get_A() * exp(-xi / (it.get_v() * tau_par));
-                pulse_xi.push_back(pulse(A_k, it.get_l(), it.get_v(), t_k, tau_par));
+                pulses_xi.push_back(pulse(A_k, it.get_l(), it.get_v(), t_k, tau_par));
             }
         }
+        // Sort pulses after they are propagated in time
+        sort(pulses_xi.begin(), pulses_xi.end(),
+                [](const pulse p1, const pulse p2) -> bool {
+                    return((p1.get_t() - p2.get_t()) < 1e-8);
+                    });
+
         // Generate signal with the vector of propagated pulses
         try{
-            generate_ts_cuda_v2(pulse_xi, signal_xi, dt, nelem);        
+            generate_ts_cuda_v2(pulses_xi, signal_xi, dt, nelem);        
         } catch (cuda_error err)
         {
             cerr << "Cuda error occured when generating signal" << endl;
@@ -128,17 +118,17 @@ int main(int argc, char* argv[])
         }
     }
 
-    ofstream myfile ("out.txt");
-    if (myfile.is_open())
-    {
-        for(size_t n = 0; n < nelem; n++)
-            myfile << signal_xi[n] << endl;
-        myfile.close();
-    }
-    else 
-    {
-        cerr << "Unable to open file";
-    }
+//    ofstream myfile ("out.txt");
+//    if (myfile.is_open())
+//    {
+//        for(size_t n = 0; n < nelem; n++)
+//            myfile << signal_xi[n] << endl;
+//        myfile.close();
+//    }
+//    else 
+//    {
+//        cerr << "Unable to open file";
+//    }
 
 
     delete [] signal_xi;
