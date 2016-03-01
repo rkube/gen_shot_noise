@@ -1,7 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include "include/gen_shot_noise.h"
+#include "include/config.h"
 
 using namespace std;
 namespace po = boost::program_options;
@@ -30,13 +27,12 @@ const map<string, dist_t> distribution_map{
     {"uniform", dist_t::uniform_t},
 };
 
-config :: config(string cfg_file) : dist_vrad_type(dist_t::normal_t), 
-                                    dist_amp_type(dist_t::expon_t), 
-                                    dist_length_type(dist_t::normal_t), 
-                                    dist_arrival_type(dist_t::uniform_t)
+config_t :: config_t(string cfg_file) : dist_vrad_type(dist_t::normal_t), 
+                                        dist_amp_type(dist_t::expon_t), 
+                                        dist_length_type(dist_t::normal_t), 
+                                        dist_arrival_type(dist_t::uniform_t)
 {
 
-    cout << "config::config\n";
     po::options_description cf_opts("Allowed options");
     po::variables_map vm;
 
@@ -69,7 +65,9 @@ config :: config(string cfg_file) : dist_vrad_type(dist_t::normal_t),
             ("length_dist", po::value<string>(&dist_length_str), "Distribution of pulse lengths")
             ("length_dist_params", po::value<string>(&dist_length_params_str), "Parameters for distribution of pulse lengths")
             ("arrival_dist", po::value<string>(&dist_arrival_str), "Distribution of pulse arrival times ")
-            ("arrival_dist_params", po::value<string>(&dist_arrival_params_str), "Parameters for distribution of pulse arrival times");
+            ("arrival_dist_params", po::value<string>(&dist_arrival_params_str), "Parameters for distribution of pulse arrival times")
+            ("num_xi", po::value<size_t>(&num_xi), "Number of radial positions")
+            ("outfile_name", po::value<string>(&outfile_name), "Name of the output file");
     } catch(exception &e)
     {
         cerr << e.what() << endl;
