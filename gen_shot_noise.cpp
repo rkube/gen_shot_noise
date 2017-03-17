@@ -11,7 +11,7 @@
 #include <boost/program_options.hpp>
 #include <iterator>
 #include <omp.h>
-#include <H5cpp.h>
+#include <H5Cpp.h>
 #include "gen_signal.h"
 
 using namespace std;
@@ -19,7 +19,7 @@ using namespace std;
 
 class ts_params{
 public:
-    ts_params(double g0, double l0, int K0, double A0, double dt0) : g(g0), l(l0), K(K0), A_mean(A0), dt(dt) {};
+    ts_params(double g0, double l0, int K0, double A0, double dt0) : g(g0), l(l0), K(K0), A_mean(A0), dt(dt0) {};
     inline double get_g() const {return g;};
     inline double get_l() const {return l;};
     inline int get_K() const {return K;};

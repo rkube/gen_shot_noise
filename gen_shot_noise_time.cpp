@@ -164,19 +164,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    ofstream myfile ("out.txt");
-    if (myfile.is_open())
-    {
-        for(size_t n = 0; n < sn_config.get_nelem(); n++)
-            myfile << signal_xi[n] << endl;
-        myfile.close();
-    }
-    else 
-    {
-        cerr << "Unable to open file";
-    }
-
-
     delete [] signal_xi;
     return(0);
 }
