@@ -28,14 +28,17 @@ output_t :: output_t(config_t config_) : sn_config(config_),
         {dist_t::normal_t, string("normal")},
         {dist_t::uniform_t, string("uniform")}};
 
-    int att_val_int{0};
-    double att_val_double{0.0};
-    H5std_string att_str;
+    int att_val_int{0};         // Store attribute value for integer values
+    double att_val_double{0.0}; // Store attribute value for double values
+    vector<double> att_vec_double;
+    const hsize_t att_vec_dims{2};
+    H5std_string att_str;       // Store attribute value for string values
 
     // Create new string datatype for attribute
-    H5::StrType strdatatype(H5::PredType::C_S1, 32); // of length 256 characters
+    H5::StrType strdatatype(H5::PredType::C_S1, 32); // of length 32 characters
 
-    H5::DataSpace attrib_space(H5S_SCALAR);
+    H5::DataSpace attrib_space(H5S_SCALAR);         // Dataspace for scalar attributes
+    H5::DataSpace attrib_space2(1, &att_vec_dims);  // Dataspace for 2 element vectors
     H5::Attribute att = dataset -> createAttribute("num_bursts", H5::PredType::NATIVE_INT, attrib_space);
     att_val_int = sn_config.get_num_bursts();
     att.write(H5::PredType::NATIVE_INT, &att_val_int);
@@ -64,17 +67,33 @@ output_t :: output_t(config_t config_) : sn_config(config_),
     att_str = my_map.at(sn_config.get_dist_amp_type());
     att.write(strdatatype, att_str);
 
+    att_vec_double = sn_config.get_dist_amp_params();
+    att = dataset -> createAttribute("Amplitude distribution parameters", H5::PredType::NATIVE_DOUBLE, attrib_space2);
+    att.write(H5::PredType::NATIVE_DOUBLE, att_vec_double.data());
+
     att = dataset -> createAttribute("Arrival time distribution", strdatatype, attrib_space);
     att_str = my_map.at(sn_config.get_dist_arrival_type());
     att.write(strdatatype, att_str);
+
+    att_vec_double = sn_config.get_dist_arrival_params();
+    att = dataset -> createAttribute("Arrival time distribution parameters", H5::PredType::NATIVE_DOUBLE, attrib_space2);
+    att.write(H5::PredType::NATIVE_DOUBLE, att_vec_double.data());
 
     att = dataset -> createAttribute("Length distribution", strdatatype, attrib_space);
     att_str = my_map.at(sn_config.get_dist_length_type());
     att.write(strdatatype, att_str);
 
+    att_vec_double = sn_config.get_dist_length_params();
+    att = dataset -> createAttribute("Length distribution parameters", H5::PredType::NATIVE_DOUBLE, attrib_space2);
+    att.write(H5::PredType::NATIVE_DOUBLE, att_vec_double.data());
+
     att = dataset -> createAttribute("Velocity distribution", strdatatype, attrib_space);
     att_str = my_map.at(sn_config.get_dist_vrad_type());
     att.write(strdatatype, att_str);
+
+    att_vec_double = sn_config.get_dist_vrad_params();
+    att = dataset -> createAttribute("Velocity distribution parameters", H5::PredType::NATIVE_DOUBLE, attrib_space2);
+    att.write(H5::PredType::NATIVE_DOUBLE, att_vec_double.data());
 
 
 }

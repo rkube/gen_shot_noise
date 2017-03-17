@@ -11,7 +11,7 @@
 #include <boost/program_options.hpp>
 #include <iterator>
 #include <omp.h>
-#include <H5cpp.h>
+#include <H5Cpp.h>
 #include "gen_signal.h"
 
 using namespace std;
