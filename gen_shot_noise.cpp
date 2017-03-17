@@ -120,7 +120,6 @@ int main(int argc, char* argv[]){
 
     cout << "Creating a synthetic shot noise signal\n";
     cout << "Parameters:\n";
-    cout << "argc = " << argc << endl;
     /* Parse command line options */
     try{
         boost::program_options::options_description desc("Allowed options");
