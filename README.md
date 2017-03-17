@@ -11,4 +11,6 @@ See the commemnts in the code for setting the distribution parameters and
 the length of the time series
 
 
-
+Use gen_shot_noise_time for the newest version. It features
+* text file configuration, see shotnoise.cfg
+* hdf5 output
