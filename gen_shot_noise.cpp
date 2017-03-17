@@ -120,6 +120,7 @@ int main(int argc, char* argv[]){
 
     cout << "Creating a synthetic shot noise signal\n";
     cout << "Parameters:\n";
+    cout << "argc = " << argc << endl;
     /* Parse command line options */
     try{
         boost::program_options::options_description desc("Allowed options");
@@ -130,13 +131,13 @@ int main(int argc, char* argv[]){
             ("l", boost::program_options::value<double>(), "tau_rise, tau_decay = 1-l, default = 0.05")
             ("A", boost::program_options::value<double>(), "Expected burst amplitude, default = 1.0")
             ("n", boost::program_options::value<int>(), "Number of threads")
-            ("cuda", boost::program_options::value<bool>(), "Use CUDA to generate time series")
-            ("omp", boost::program_options::value<bool>(), "Use OpenMP to generate time series");
+            ("cuda", boost::program_options::value<bool>(), "Use CUDA to generate time series. Either on or off.")
+            ("omp", boost::program_options::value<bool>(), "Use OpenMP to generate time series. Either on or off");
         boost::program_options::variables_map vm;
         boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
         boost::program_options::notify(vm);
 
-        if (vm.count("help")){
+        if (vm.count("help") || argc == 1){
             cout << desc << "\n";
             return(1);
         }

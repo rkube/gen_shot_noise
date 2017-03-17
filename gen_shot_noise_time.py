@@ -11,9 +11,9 @@ tau = 1 mu s
 """
 
 # Number of bursts
-K = 100000
+K = 5000
 dt = 1e-2 
-T_end = 5e4
+T_end = 5e3
 L_par = 1e4
 C_s = 10.
 L_sol = 30.0
@@ -37,14 +37,15 @@ v_k0 = np.random.normal(loc=5e-2, scale=5e-3, size=K)
 tau_perp = l_k / v_k0
 tau_par = L_par / C_s
 tau_d_k0 = tau_par * tau_perp / (tau_par + tau_perp)
-tau_w = K / T_end
+tau_w = T_end / K
 gamma = tau_d_k0.mean() / tau_w
 print 'gamma = %f' % gamma
 # Position where we evaluate the profile
 xi_range = np.arange(0.0, L_sol, 1.0)
 
 # Number of points in time direction
-N = int(K * gamma)
+#N = int(K / gamma)
+N = int(T_end / dt)
 print 'N = %d' % N
 
 signal = np.zeros([xi_range.size, N], dtype='float64')
@@ -91,12 +92,12 @@ plt.plot(tau_d_k, '.')
 
 plt.figure()
 for i in np.arange(signal.shape[0]):
-    plt.plot(t_rg, signal[i, :] + i)
+    plt.plot(t_rg, signal[i, :] + i + signal[i, :].mean())
 plt.xlabel(r"t")
 plt.ylabel(r"$\Phi(t)$")
 
 plt.figure()
-plt.semilogy(xi_range, signal[:, 4000:].mean(axis=1))
+plt.semilogy(xi_range, signal[:, 4000:40000].mean(axis=1))
 plt.xlabel(r"$\xi$")
 plt.ylabel(r"$\langle \Phi \rangle$")
 
